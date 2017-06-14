@@ -19,11 +19,13 @@ go get github.com/nirnanaaa/go-sepa
 Verifying **creditor identifier (ci)**:
 
 ```go
-sanitized, err := sepa.SanitizeCreditorIdentifier("DE98ZZZ09999999999")
+ci := sepa.NewCreditorIdentifier("DE98ZZZ09999999999")
+sanitized, err := ci.Validate()
 ```
 
 Verifying **IBAN (iban)**:
 
 ```go
-sanitized, err := sepa.SanitizeIBAN("DE21700519950000007229")
+iban := sepa.NewIBAN("DE21700519950000007229")
+sanitized, err := iban.Validate()
 ```
