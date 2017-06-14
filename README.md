@@ -1,5 +1,7 @@
 # Go SEPA
 
+[![Build Status](https://travis-ci.org/nirnanaaa/go-sepa.svg?branch=master)](https://travis-ci.org/nirnanaaa/go-sepa)
+
 Go SEPA provides tools and utilities for generating SEPA-XML Files and validating
 the input.
 
