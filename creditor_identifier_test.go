@@ -11,7 +11,8 @@ const validCredIdentifier1 = "DE98ZZZ09999999999"
 const invalidCredIdentifier = "__10ZZZ00000758814"
 
 func TestWhitespaceSanitization(t *testing.T) {
-	str, err := sepa.SanitizeCreditorIdentifier(validCredIdentifier + " ")
+	id := sepa.NewCreditorIdentifier(validCredIdentifier + " ")
+	str, err := id.Validate()
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -20,13 +21,15 @@ func TestWhitespaceSanitization(t *testing.T) {
 	}
 }
 func TestInvalidCreditorIdentifier(t *testing.T) {
-	_, err := sepa.SanitizeCreditorIdentifier(invalidCredIdentifier)
+	id := sepa.NewCreditorIdentifier(invalidCredIdentifier)
+	_, err := id.Validate()
 	if err == nil {
 		t.Fatal("regex on creditor identifier didn't match.")
 	}
 }
 func TestCapitalization(t *testing.T) {
-	str, err := sepa.SanitizeCreditorIdentifier("de10ZZZ00000758814")
+	id := sepa.NewCreditorIdentifier("de10ZZZ00000758814")
+	str, err := id.Validate()
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -53,7 +56,8 @@ func TestChecksums(t *testing.T) {
 
 func TestBadFormatting(t *testing.T) {
 	comp := "d e98 Z ZZ 09 99 9999999"
-	str, err := sepa.SanitizeCreditorIdentifier(comp)
+	id := sepa.NewCreditorIdentifier(comp)
+	str, err := id.Validate()
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -64,7 +68,8 @@ func TestBadFormatting(t *testing.T) {
 
 func TestInvalidChars(t *testing.T) {
 	comp := "DE98ZZÄ09999999998"
-	_, err := sepa.SanitizeCreditorIdentifier(comp)
+	id := sepa.NewCreditorIdentifier(comp)
+	_, err := id.Validate()
 	if err == nil {
 		t.Fatal("regex on creditor identifier didn't match.")
 	}
@@ -72,7 +77,8 @@ func TestInvalidChars(t *testing.T) {
 
 func TestTooShortInput(t *testing.T) {
 	comp := "DE9"
-	_, err := sepa.SanitizeCreditorIdentifier(comp)
+	id := sepa.NewCreditorIdentifier(comp)
+	_, err := id.Validate()
 	if err == nil {
 		t.Fatal("program didn't accept garbage.")
 	}
@@ -80,7 +86,8 @@ func TestTooShortInput(t *testing.T) {
 
 func TestInvalidChecksum(t *testing.T) {
 	comp := "DE98ZZZ09999999998"
-	_, err := sepa.SanitizeCreditorIdentifier(comp)
+	id := sepa.NewCreditorIdentifier(comp)
+	_, err := id.Validate()
 	if err == nil {
 		t.Fatal("invalid checksum was allowed.")
 	}
@@ -88,7 +95,8 @@ func TestInvalidChecksum(t *testing.T) {
 
 func TestIgnoreMiddlePart(t *testing.T) {
 	comp := "DE98abc09999999999"
-	str, err := sepa.SanitizeCreditorIdentifier(comp)
+	id := sepa.NewCreditorIdentifier(comp)
+	str, err := id.Validate()
 	if err != nil {
 		t.Fatal(err.Error())
 	}

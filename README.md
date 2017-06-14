@@ -21,3 +21,9 @@ Verifying **creditor identifier (ci)**:
 ```go
 sanitized, err := sepa.SanitizeCreditorIdentifier("DE98ZZZ09999999999")
 ```
+
+Verifying **IBAN (iban)**:
+
+```go
+sanitized, err := sepa.SanitizeIBAN("DE21700519950000007229")
+```

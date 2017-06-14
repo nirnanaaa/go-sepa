@@ -8,20 +8,27 @@ import (
 	"strings"
 )
 
-const emptyStringRegex = `\s+`
+// CreditorIdentifier defines a struct to easily verify identifiers
+type CreditorIdentifier struct {
+	ID string
+}
 
-// SanitizeCreditorIdentifier checks if an creditor identifier (ci) is valid.
+// NewCreditorIdentifier creates a new Creditor identifier object
+func NewCreditorIdentifier(identifier string) CreditorIdentifier {
+	return CreditorIdentifier{identifier}
+}
+
+// Validate checks if an creditor identifier (ci) is valid.
 // Note that also if the ci is valid it does not have to exist
-func SanitizeCreditorIdentifier(identifier string) (string, error) {
-	re := regexp.MustCompile(emptyStringRegex)
-	sanitized := re.ReplaceAllString(identifier, "")
-	sanitized = strings.ToUpper(sanitized)
-	if !isValidCreditorIdentifier(sanitized) {
+func (c CreditorIdentifier) Validate() (string, error) {
+	identifier := c.ID
+	sanitized := UniformString(identifier)
+	if !c.isValidCreditorIdentifier(sanitized) {
 		return "", fmt.Errorf("the creditor identifier isn't valid")
 	}
 	var checksum bytes.Buffer
-	checksum.WriteString(getCreditorIdentifierChecksum(sanitized))
-	checksum.WriteString(getCreditorIdentifierNationalID(sanitized))
+	checksum.WriteString(c.getChecksum(sanitized))
+	checksum.WriteString(c.getNationalID(sanitized))
 	sanitizedChecksum := removeNonAlnumChars(checksum.String())
 	convertedChecksum := ConvertStringToMatchingInts(sanitizedChecksum)
 	valid := Iso7064Mod97m10ChecksumCheck(convertedChecksum)
@@ -31,7 +38,7 @@ func SanitizeCreditorIdentifier(identifier string) (string, error) {
 	return sanitized, nil
 }
 
-func isValidCreditorIdentifier(identifier string) bool {
+func (c CreditorIdentifier) isValidCreditorIdentifier(identifier string) bool {
 	re := regexp.MustCompile(PatternCreditorIdentifier)
 	return re.MatchString(identifier)
 }
@@ -41,11 +48,11 @@ func removeNonAlnumChars(src string) string {
 	return re.ReplaceAllString(src, "")
 }
 
-func getCreditorIdentifierChecksum(identifier string) string {
+func (c CreditorIdentifier) getChecksum(identifier string) string {
 	return identifier[7:]
 }
 
-func getCreditorIdentifierNationalID(identifier string) string {
+func (c CreditorIdentifier) getNationalID(identifier string) string {
 	return identifier[:4]
 }
 
