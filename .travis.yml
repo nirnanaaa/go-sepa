@@ -1,0 +1,7 @@
+language: go
+dist: trusty
+go:
+  - tip
+  - 1.8
+  - 1.7
+script: go test -v -coverprofile=coverage.txt -covermode=atomic -bench .
