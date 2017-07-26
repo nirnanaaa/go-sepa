@@ -24,3 +24,14 @@ func TestValidIBANFormat(t *testing.T) {
 		t.Fatal("Iban is invalid but regex allowed it!")
 	}
 }
+
+func TestValidIBANIsNational(t *testing.T) {
+	iban := "DE21700519950000007229"
+	iban1, err := sepa.NewIBAN(iban)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	if !iban1.IsNationalTo("DE1234") {
+		t.Fatal("should be a national iban")
+	}
+}

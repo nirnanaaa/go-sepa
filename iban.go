@@ -42,6 +42,12 @@ func (i *IBAN) ValidateRegex() (string, error) {
 func (i *IBAN) String() string {
 	return fmt.Sprintf("%s%s%s%s", i.CountryCode, i.Checksum, i.BBAN, i.AccountNumber)
 }
+
+// IsNationalTo validates if the provided iban is in the same country as the one constructed
+func (i *IBAN) IsNationalTo(iban string) bool {
+	return i.CountryCode == CountryCode(iban)
+}
+
 func validateIBANRegex(input string) bool {
 	re := regexp.MustCompile(PatternIban)
 	return re.MatchString(input)
